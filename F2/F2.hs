@@ -1,4 +1,3 @@
-import Data.Sequence (Seq)
 data MolSeq = Sequence String String String
 
 instance Show MolSeq where
