@@ -6,10 +6,14 @@ public class Lexer {
 
     private List<Token> tokens;
     private int index;
+    private List<String> data;
+    private int indexData;
 
     public Lexer(String code) {
-        tokens = tokenize(code);
         index = 0;
+        indexData = 0;
+        data = new ArrayList<>();
+        tokens = tokenize(code);
     }
 
     public Token peek() {
@@ -25,6 +29,15 @@ public class Lexer {
         if (index < tokens.size()) {
             System.out.println(tokens.get(index));
             return tokens.get(index++);
+        }
+        else {
+            return null;
+        }
+    }
+
+    public String nextData() {
+        if (indexData < data.size()) {
+            return data.get(indexData++);
         }
         else {
             return null;
@@ -47,12 +60,30 @@ public class Lexer {
             for (Token token : Token.values()) {
                 Matcher matcher = token.getMatcher(input.substring(index));
                 if (matcher.lookingAt()) {
-                    String matchedText = matcher.group();
                     tokens.add(token);
-                    if (token == Token.REP) {
-                        tokens.add(Token.DECIMAL);
-                    }
+                    String matchedText = matcher.group();
                     index += matchedText.length();
+                    if (token == Token.REP) {
+                        token = Token.DECIMAL;
+                        tokens.add(token);
+                        matchedText = matchedText.replaceFirst("^[^\\d]*", "");
+                        matcher = token.getMatcher(matchedText);
+                    }
+                    if (token == Token.DECIMAL) {
+                        System.out.println("test");
+                        if (matcher.lookingAt()) {
+                        String digit = matcher.group();
+                        data.add(digit);
+                        System.out.println("MATCH: " + data);
+                        }
+                    }
+                    if (token == Token.HEX) {
+                        if (matcher.lookingAt()) {
+                            String hex = matcher.group();
+                            data.add(hex);
+                            System.out.println("MATCH: " + data);
+                            }
+                    }
                     tokenMatched = true;
                     break;
                 }
@@ -61,7 +92,9 @@ public class Lexer {
                 index++;
             }
         }
-    
+        //for(String s : data) {
+        //    System.out.println(s);
+        //}
         return tokens;
     }
 }

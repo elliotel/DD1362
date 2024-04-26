@@ -52,6 +52,8 @@ public class Parser {
         if (next != Token.DECIMAL) {
             throw new RuntimeException("Syntax Error!");
         }
+        String decimal = lexer.nextData();
+        System.out.println(decimal);
     }
 
     private void turn() {
@@ -72,6 +74,8 @@ public class Parser {
         if (next != Token.HEX) {
             throw new RuntimeException("Syntax Error!");
         }
+        String hex = lexer.nextData();
+        System.out.println(hex);
     }
     
     private void repeat() {

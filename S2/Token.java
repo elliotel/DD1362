@@ -30,6 +30,5 @@ public enum Token {
     public Matcher getMatcher(String input) {
         return pattern.matcher(input);
     }
-    
 
 }
