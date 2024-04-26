@@ -5,44 +5,44 @@ public class Parser {
         this.lexer = lexer;
     }
 
-    public void parse() {
-        while (lexer.peek() != null) {
-        command();
+    public ParseTree parse() {
+        if (lexer.peek() != null) {
+        return command();
         }
     }
 
-    private void command() {
+    private ParseTree command() {
         Token next = lexer.peek();
         if (next == null) {
-            return;
+            return null;
         }
         switch (next) {
             case ERROR:
                 throw new RuntimeException("Syntax Error!");
             case FORW:
             case BACK:
-                movement();
+                return movement();
                 break;
             case LEFT:
             case RIGHT:
-                turn();
+                return turn();
                 break;
             case UP:
             case DOWN:
-                brushMode();
+                return brushMode();
                 break;
             case COLOR:
-                colorChange();
+                return colorChange();
                 break;
             case REP:
-                repeat();
+                return repeat();
                 break;
             default:
                 throw new RuntimeException("Syntax Error!");
         }
     }
 
-    private void movement() {
+    private ParseTree movement() {
         lexer.pop();
         decimal();
     }
