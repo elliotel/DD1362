@@ -1,4 +1,5 @@
-<command_sequence> ::= <command> | <command> <command_sequence><command> ::= <movement>. | <turn>. | <brush_mode>. | <color_change>. | <repeat>.
+<command_sequence> ::= <command> | <command> <command_sequence>
+<command> ::= <movement>. | <turn>. | <brush_mode>. | <color_change>. | <repeat>.
 <movement> ::= <move> <decimal>
 <move> ::= FORW | BACK
 <turn> ::= <direction> <decimal>
