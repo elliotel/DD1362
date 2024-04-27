@@ -58,11 +58,18 @@ public class Parser {
         Token move = lexer.pop();
         ParseTree left = new ParseTree(null, null, move.name());
         ParseTree right = decimal();
+        if (lexer.peek() != Token.PERIOD) {
+            throw new RuntimeException("Missing Period!");
+        }
+        lexer.pop();
         return new ParseTree(left, right);
     }
 
     private ParseTree decimal() {
         Token next = lexer.pop();
+        while (next == Token.COMMENT) {
+            next = lexer.pop();
+        }
         if (next != Token.DECIMAL) {
             throw new RuntimeException("Syntax Error!");
         }
@@ -74,12 +81,20 @@ public class Parser {
         Token direction = lexer.pop();
         ParseTree left = new ParseTree(null, null, direction.name());
         ParseTree right = decimal();
+        if (lexer.peek() != Token.PERIOD) {
+            throw new RuntimeException("Missing Period!");
+        }
+        lexer.pop();
         return new ParseTree(left, right);
     }
 
     private ParseTree brushMode() {
         Token mode = lexer.pop();
         ParseTree left = new ParseTree(null, null, mode.name());
+        if (lexer.peek() != Token.PERIOD) {
+            throw new RuntimeException("Missing Period!");
+        }
+        lexer.pop();
         return new ParseTree(left);
     }
 
@@ -87,11 +102,18 @@ public class Parser {
         lexer.pop();
         ParseTree left = new ParseTree(null, null, Token.COLOR.name());
         ParseTree right = hexCode();
+        if (lexer.peek() != Token.PERIOD) {
+            throw new RuntimeException("Missing Period!");
+        }
+        lexer.pop();
         return new ParseTree(left, right);
     }
 
     private ParseTree hexCode() {
         Token next = lexer.pop();
+        while (next == Token.COMMENT) {
+            next = lexer.pop();
+        }
         if (next != Token.HEX) {
             throw new RuntimeException("Syntax Error!");
         }
@@ -104,6 +126,10 @@ public class Parser {
         Token next = lexer.peek();
         ParseTree innerLeft = new ParseTree(null, null, Token.REP.name());
         ParseTree innerRight = null;
+        while (next == Token.COMMENT) {
+            lexer.pop();
+            next = lexer.peek();
+        }
         if (next == Token.DECIMAL) {
             innerRight = decimal();
         }

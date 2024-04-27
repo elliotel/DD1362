@@ -27,7 +27,6 @@ public class Lexer {
 
     public Token pop() {
         if (index < tokens.size()) {
-            System.out.println(tokens.get(index));
             return tokens.get(index++);
         }
         else {
@@ -70,18 +69,15 @@ public class Lexer {
                         matcher = token.getMatcher(matchedText);
                     }
                     if (token == Token.DECIMAL) {
-                        System.out.println("test");
-                        if (matcher.lookingAt()) {
+                        if (matcher.lookingAt()) {  
                         String digit = matcher.group();
                         data.add(digit);
-                        System.out.println("MATCH: " + data);
                         }
                     }
                     if (token == Token.HEX) {
                         if (matcher.lookingAt()) {
                             String hex = matcher.group();
                             data.add(hex);
-                            System.out.println("MATCH: " + data);
                             }
                     }
                     tokenMatched = true;
@@ -92,9 +88,6 @@ public class Lexer {
                 index++;
             }
         }
-        //for(String s : data) {
-        //    System.out.println(s);
-        //}
         return tokens;
     }
 }

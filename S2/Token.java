@@ -2,14 +2,15 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 public enum Token {
-    FORW ("forw[ \t\n]+"),
-    BACK ("back[ \t\n]+"),
-    LEFT ("left[ \t\n]+"),
-    RIGHT ("right[ \t\n]+"),
+    FORW ("forw[ \t\r\n]+"),
+    BACK ("back[ \t\r\n]+"),
+    LEFT ("left[ \t\r\n]+"),
+    RIGHT ("right[ \t\r\n]+"),
     DOWN ("down"),
     UP ("up"),
-    COLOR ("color[ \t\n]+"),
-    REP ("rep[ \t\n]+\\d+[ \t\n]+"),
+    COLOR ("color[ \t\r\n]+"),
+    //REP ("rep[ \t\r\n]+\\d+[ \t\r\n]+"),
+    REP ("rep[ \t\r\n]+(\\d+|%.*?\r?\n[ \t\r\n]*\\d+)[ \t\r\n]+"),
     PERIOD ("\\."),
     QUOTE ("\""),
     DECIMAL ("\\d+"),
