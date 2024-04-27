@@ -99,7 +99,6 @@ public class Parser {
     private ParseTree repeat() {
         lexer.pop();
         Token next = lexer.peek();
-        int reps = 0;   
         ParseTree innerLeft = new ParseTree(null, null, Token.REP.name());
         ParseTree innerRight = null;
         if (next == Token.DECIMAL) {
