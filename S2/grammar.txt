@@ -1,8 +1,8 @@
-<command> ::= <movement>. | <turn>. | <brush_mode>. | <color_change>. | <repeat>.
+<command_sequence> ::= <command> | <command> <command_sequence><command> ::= <movement>. | <turn>. | <brush_mode>. | <color_change>. | <repeat>.
 <movement> ::= <move> <decimal>
 <move> ::= FORW | BACK | 
-<turn> ::= <angle> <decimal>
-<angle> ::= LEFT | RIGHT
+<turn> ::= <direction> <decimal>
+<direction> ::= LEFT | RIGHT
 <brush_mode> ::= UP | DOWN
 <color_change> ::= COLOR <hex_code>
 <hex_code> ::= # <hex_character> | <hex_character> | <hex_character> | <hex_character> | <hex_character> | <hex_character>
@@ -10,4 +10,3 @@
 <digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 <decimal> ::= <digit> | <digit> <decimal>
 <repeat> ::= REP <decimal> <command> | REP <decimal> "<command>" | REP <decimal> "<command_sequence>"
-<command_sequence> ::= <command> | <command> <command_sequence>

@@ -1,26 +1,20 @@
 public class ParseTree {
-    private Token token;
-    private String data;
     private ParseTree left;
     private ParseTree right;
+    private String data;
 
-    public ParseTree(Token token, String data, ParseTree left, ParseTree right) {
-        this.token = token;
-        this.data = data;
+    public ParseTree(ParseTree left, ParseTree right, String data) {
         this.left = left;
         this.right = right;
+        this.data = data;
     }
 
-    public ParseTree(Token token, String data) {
-        this(token, data, null, null);
+    public ParseTree(ParseTree left) {
+        this(left, null, null);
     }
 
-    public ParseTree(Token token, String data, ParseTree left) {
-        this(token, data, left, null);
-    }
-
-    public Token getToken() {
-        return token;
+    public ParseTree(ParseTree left, ParseTree right) {
+        this(left, right, null);
     }
 
     public String getData() {
@@ -33,13 +27,5 @@ public class ParseTree {
 
     public ParseTree getRight() {
         return right;
-    }
-
-    public void setLeft(ParseTree left) {
-        this.left = left;
-    }
-
-    public void setRight(ParseTree right) {
-        this.right = right;
     }
 }
