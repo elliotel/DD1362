@@ -13,6 +13,9 @@ public class Parser {
     }
 
     private ParseTree commandSequence() {
+        while (lexer.peek() == Token.COMMENT) {
+            lexer.pop();
+        }
         if (lexer.peek() != null) {
         ParseTree left = command();
         ParseTree right = null;
