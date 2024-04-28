@@ -4,22 +4,18 @@ import java.nio.file.Paths;
 
 public class Main {
 
-    /*
-    public static void main(String[] args) {
-        String code = fileToString("code.txt");
-        Lexer lexer = new Lexer(code);
-        while (lexer.peek() != null) {
-            System.out.println("Token: " + lexer.pop());
-        }
-    }
-    */
-
+    
     public static void main(String[] args) {
         String code = fileToString("code.txt");
         Lexer lexer = new Lexer(code);
         Parser parser = new Parser(lexer);
-        parser.parse();
+        ParseTree parseTree = parser.parse();
+        Program program = new Program(parseTree);
+        program.execute();
+        
     }
+
+    
 
     public static String fileToString(String fileLocation) {
         String code = "";
