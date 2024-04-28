@@ -10,7 +10,7 @@ public enum Token {
     UP ("up"),
     COLOR ("color[ \t\r\n]+"),
     //REP ("rep[ \t\r\n]+\\d+[ \t\r\n]+"),
-    REP ("rep[ \t\r\n]+(\\d+|%.*?\r?\n[ \t\r\n]*\\d+)[ \t\r\n]+"),
+    REP ("rep([ \t\r\n]|(?:%[^\r\n]*\r?\n))+(\\d+|%.*?\r?\n[ \t\r\n]*\\d+)([ \t\r\n]+|(?:%[^\r\n]*\r?\n))"),
     PERIOD ("\\."),
     QUOTE ("\""),
     DECIMAL ("\\d+"),

@@ -23,21 +23,14 @@ public class Program {
     private void execute(ParseTree parseTree) {
         ParseTree left = parseTree.getLeft();
         ParseTree right = parseTree.getRight();
+        Boolean rep = false;
         if (left != null) {
             if (left.getLeft() != null) {
-                if (left.getLeft().getLeft() != null && left.getLeft().getLeft().getData() == "REP") {
-                    int reps = Integer.parseInt(left.getLeft().getRight().getData());
-                    System.out.println(reps);
+                if (left.getLeft().getData() == "REP") {
+                    int reps = Integer.parseInt(left.getRight().getData());
                     for (int i = 0; i < reps; i++) {
-                    execute(left.getRight());
-                    if(left.getRight() != null && left.getRight().getLeft() != null && left.getRight().getLeft().getData() == "REP") {
-                        if (left.getRight().getRight() != null) {
-                        execute(left.getRight().getRight());
-                        }
-                        else {
-                            throw new RuntimeException("Syntax Error!");
-                        }
-                    }
+                    execute(right);
+                    rep = true;
                     }
                 }
                 else {
@@ -54,14 +47,12 @@ public class Program {
             }
             if (right != null) {
                 if (right.getLeft() != null) {
+                    if (!rep) {
                     execute(right);
+                    }
                 }
             }
         }
-        else {
-            throw new RuntimeException("Syntax Error!");
-        }
-        
     }
     
     private void run(String leftData, String rightData) {
