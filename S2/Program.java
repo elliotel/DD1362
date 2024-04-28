@@ -27,8 +27,17 @@ public class Program {
             if (left.getLeft() != null) {
                 if (left.getLeft().getLeft() != null && left.getLeft().getLeft().getData() == "REP") {
                     int reps = Integer.parseInt(left.getLeft().getRight().getData());
+                    System.out.println(reps);
                     for (int i = 0; i < reps; i++) {
                     execute(left.getRight());
+                    if(left.getRight() != null && left.getRight().getLeft() != null && left.getRight().getLeft().getData() == "REP") {
+                        if (left.getRight().getRight() != null) {
+                        execute(left.getRight().getRight());
+                        }
+                        else {
+                            throw new RuntimeException("Syntax Error!");
+                        }
+                    }
                     }
                 }
                 else {

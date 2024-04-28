@@ -66,11 +66,11 @@ public class Parser {
     }
 
     private ParseTree decimal() {
-        Token next = lexer.pop();
-        while (next == Token.COMMENT) {
-            next = lexer.pop();
+        Token curr = lexer.pop();
+        while (curr == Token.COMMENT) {
+            curr = lexer.pop();
         }
-        if (next != Token.DECIMAL) {
+        if (curr != Token.DECIMAL) {
             throw new RuntimeException("Syntax Error!");
         }
         String decimal = lexer.nextData();
@@ -110,11 +110,11 @@ public class Parser {
     }
 
     private ParseTree hexCode() {
-        Token next = lexer.pop();
-        while (next == Token.COMMENT) {
-            next = lexer.pop();
+        Token curr = lexer.pop();
+        while (curr == Token.COMMENT) {
+            curr = lexer.pop();
         }
-        if (next != Token.HEX) {
+        if (curr != Token.HEX) {
             throw new RuntimeException("Syntax Error!");
         }
         String hex = lexer.nextData();
@@ -143,6 +143,9 @@ public class Parser {
             lexer.pop();
             right = commandSequence();
             lexer.pop();
+        }
+        else if (next == Token.REP) {
+            right = repeat();
         }
         else {
             right = command();

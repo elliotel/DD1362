@@ -27,6 +27,7 @@ public class Lexer {
 
     public Token pop() {
         if (index < tokens.size()) {
+            System.out.println(tokens.get(index));
             return tokens.get(index++);
         }
         else {
