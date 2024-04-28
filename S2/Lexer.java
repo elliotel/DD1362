@@ -91,7 +91,6 @@ public class Lexer {
                     tokens.add(token);
                     newlines.add(newLineCount + 1);
                     String matchedText = matcher.group();
-                    System.out.println(matchedText);
                     index += matchedText.length();
                     if (token == Token.REP) {
                         token = Token.DECIMAL;
@@ -118,12 +117,6 @@ public class Lexer {
             if (!tokenMatched) {
                 index++;
             }
-        }
-        for (Token t : tokens) {
-            System.out.println(t.name());
-        }
-        for (int i : newlines) {
-            System.out.println(i);
         }
         return tokens;
     }

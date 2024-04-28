@@ -160,11 +160,9 @@ public class Parser {
         if (next == Token.QUOTE) {
             lexer.popWithNewlines();
             right = commandSequence();
-            System.out.println(lexer.peek());
             while (lexer.peek() == Token.COMMENT) {
                 lexer.popWithNewlines();
             }
-            System.out.println(lexer.peek());
             if (lexer.peek() != Token.QUOTE) {
                 throw new RuntimeException("Syntaxfel på rad " + line);
             }
