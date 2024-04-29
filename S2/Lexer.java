@@ -10,11 +10,13 @@ public class Lexer {
     private int indexNewlines;
     private List<String> data;
     private int indexData;
+    private int quoteCount;
 
     public Lexer(String code) {
         index = 0;
         indexData = 0;
         indexNewlines = 0;
+        quoteCount = 0;
         data = new ArrayList<>();
         newlines = new ArrayList<>();
         tokens = tokenize(code);
@@ -44,20 +46,20 @@ public class Lexer {
     }
     
     public int peekNewlines() {
-        if (index < newlines.size()) {
+        if (indexNewlines < newlines.size()) {
             return newlines.get(indexNewlines);
         }
         else {
-            return 0;
+            return newlines.get(newlines.size()-1);
         }
     }
 
     public int popNewlines() {
-        if (index < newlines.size()) {
+        if (indexNewlines < newlines.size()) {
             return newlines.get(indexNewlines++);
         }
         else {
-            return 0;
+            return newlines.get(newlines.size()-1);
         }
     }
 
@@ -88,13 +90,30 @@ public class Lexer {
                 int newLineCount = countNewlines(removed);
                 Matcher matcher = token.getMatcher(input.substring(index));
                 if (matcher.lookingAt()) {
-                    tokens.add(token);
+                    if (token == Token.QUOTE) {
+                        if (tokens.get(tokens.size() - 2) == Token.REP) {
+                            quoteCount++;
+                        }
+                        else {
+                            quoteCount--;
+                        }
+                        if (quoteCount < 0) {
+                            tokens.add(Token.ERROR);
+                        }
+                        else {
+                            tokens.add(token);
+                        }
+                    }
+                    else {
+                        tokens.add(token);
+                    }
                     newlines.add(newLineCount + 1);
                     String matchedText = matcher.group();
                     index += matchedText.length();
                     if (token == Token.REP) {
                         token = Token.DECIMAL;
                         tokens.add(token);
+                        newlines.add(newLineCount + 1);
                         matchedText = matchedText.replaceFirst("^[^\\d]*", "");
                         matcher = token.getMatcher(matchedText);
                     }
@@ -117,6 +136,12 @@ public class Lexer {
             if (!tokenMatched) {
                 index++;
             }
+        }
+        for (Token t : tokens) {
+            System.out.println(t.name());
+        }
+        for (int i : newlines) {
+            System.out.println(i);
         }
         return tokens;
     }

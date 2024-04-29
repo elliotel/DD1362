@@ -4,16 +4,27 @@ import java.text.DecimalFormat;
 
 public class Program {
 
-    private double x = 0;
-    private double y = 0;
-    private int angle = 0;
-    private String color = "#0000FF";
-    private Boolean drawing = false;
+    private double x;
+    private double y;
+    private int angle;
+    private double cosAngle;
+    private double sinAngle;
+    private Boolean angleChanged;
+    private String color;
+    private Boolean drawing;
 
     ParseTree parseTree;
 
     public Program(ParseTree parseTree) {
         this.parseTree = parseTree;
+        x = 0;
+        y = 0; 
+        angle = 0;
+        cosAngle = 0;
+        sinAngle = 0;
+        angleChanged = true;
+        color = "#0000FF";
+        drawing = false;
     }
 
     public void execute() {
@@ -21,6 +32,9 @@ public class Program {
     }
 
     private void execute(ParseTree parseTree) {
+        if (parseTree == null) {
+            return;
+        }
         ParseTree left = parseTree.getLeft();
         ParseTree right = parseTree.getRight();
         Boolean rep = false;
@@ -63,8 +77,13 @@ public class Program {
                 int forward = Integer.parseInt(rightData);
                 double oldXfw = x;
                 double oldYfw = y;
-                x += forward * Math.cos(Math.PI*angle/180);
-                y += forward * Math.sin(Math.PI*angle/180);
+                if (angleChanged) {
+                    cosAngle = Math.cos(Math.PI*angle/180);
+                    sinAngle = Math.sin(Math.PI*angle/180);
+                    angleChanged = false;
+                }
+                x += forward * cosAngle;
+                y += forward * sinAngle;
                 if (x > -0.00005 && x < 0) { x = 0; }
                 if (y > -0.00005 && y < 0) { y = 0; }
                 if (drawing) {
@@ -86,10 +105,12 @@ public class Program {
             case "LEFT":
                 int left = Integer.parseInt(rightData);
                 angle += left;
+                angleChanged = true;
                 break;
             case "RIGHT":
                 int right = Integer.parseInt(rightData);
                 angle -= right;
+                angleChanged = true;
                 break;
             case "UP":
                 drawing = false;

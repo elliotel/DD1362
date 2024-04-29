@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+//import java.util.Scanner;
 
 public class Main {
 
@@ -27,5 +28,27 @@ public class Main {
         }
         return code;
     }
+    
+        /*
+    
+        public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String code = "";
+        while (sc.hasNextLine()) {
+            code += sc.nextLine() + "\n";
+        }
+        try {
+        Lexer lexer = new Lexer(code);
+        Parser parser = new Parser(lexer);
+        ParseTree parseTree = parser.parse();
+        Program program = new Program(parseTree);
+        program.execute();
+        }
+        catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+        }
+        sc.close();
+    }
+     */
 }
 

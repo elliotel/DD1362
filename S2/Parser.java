@@ -56,11 +56,11 @@ public class Parser {
     }
 
     private ParseTree movement() {
-        Token move = lexer.pop();
-        int line = lexer.popNewlines();
+        Token move = lexer.popWithNewlines();
         ParseTree left = new ParseTree(null, null, move.name());
         ParseTree right = decimal();
-        Token curr = lexer.popWithNewlines();
+        Token curr = lexer.pop();
+        int line = lexer.popNewlines();
         if (curr != Token.PERIOD) {
             throw new RuntimeException("Syntaxfel på rad  " + line);
         }
@@ -77,6 +77,9 @@ public class Parser {
             throw new RuntimeException("Syntaxfel på rad  " + line);
         }
         String decimal = lexer.nextData();
+        if (Integer.parseInt(decimal) == 0) {
+            throw new RuntimeException("Syntaxfel på rad  " + line);
+        }
         return new ParseTree(null, null, decimal);
     }
 
@@ -163,6 +166,7 @@ public class Parser {
             while (lexer.peek() == Token.COMMENT) {
                 lexer.popWithNewlines();
             }
+            line = lexer.peekNewlines();
             if (lexer.peek() != Token.QUOTE) {
                 throw new RuntimeException("Syntaxfel på rad " + line);
             }
