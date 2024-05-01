@@ -8,20 +8,18 @@ public class Main {
     
     public static void main(String[] args) {
         String code = fileToString("code.txt");
-        //try {
+        try {
         Lexer lexer = new Lexer(code);
         Parser parser = new Parser(lexer);
         ParseTree parseTree = parser.parse();
         Program program = new Program(parseTree);
         program.execute();
-        //}
-        //catch (RuntimeException e) {
-        //    System.out.println(e.getMessage());
-        //}
+        }
+        catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+        }
         
     }
-
-    
 
     public static String fileToString(String fileLocation) {
         String code = "";
@@ -34,8 +32,7 @@ public class Main {
         return code;
     }
     
-        /*
-    
+    /* 
         public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         String code = "";
@@ -54,6 +51,7 @@ public class Main {
         }
         sc.close();
     }
-     */
+
+    */
 }
 

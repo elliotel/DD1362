@@ -15,7 +15,8 @@ public enum Token {
     QUOTE ("\""),
     DECIMAL ("\\d+"),
     HEX ("#([A-Fa-f0-9]{6})"),
-    COMMENT ("%[^\r\n]*\r?\n"),
+    //COMMENT ("%[^\r\n]*\r?\n"),
+    COMMENT ("%[^\r\n]*(?:\r?\n|$)"),
     ERROR (".*");
 
     private Pattern pattern;
