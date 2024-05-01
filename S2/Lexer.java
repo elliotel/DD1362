@@ -86,12 +86,19 @@ public class Lexer {
     
             boolean tokenMatched = false;
             for (Token token : Token.values()) {
-                String removed = input.substring(0, index);
-                int newLineCount = countNewlines(removed);
                 Matcher matcher = token.getMatcher(input.substring(index));
                 if (matcher.lookingAt()) {
+                    String removed = input.substring(0, index);
+                    int newLineCount = countNewlines(removed);
                     if (token == Token.QUOTE) {
-                        if (tokens.get(tokens.size() - 2) == Token.REP) {
+                        int comments = 0;
+                        while (tokens.get(tokens.size() - 1 - comments) == Token.COMMENT) {
+                            comments++;
+                        }
+                        while (tokens.get(tokens.size() - 2 - comments) == Token.COMMENT) {
+                            comments++;
+                        }
+                        if (tokens.get(tokens.size() - 2 - comments) == Token.REP) {
                             quoteCount++;
                         }
                         else {
@@ -136,12 +143,6 @@ public class Lexer {
             if (!tokenMatched) {
                 index++;
             }
-        }
-        for (Token t : tokens) {
-            System.out.println(t.name());
-        }
-        for (int i : newlines) {
-            System.out.println(i);
         }
         return tokens;
     }

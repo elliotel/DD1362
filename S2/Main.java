@@ -8,11 +8,16 @@ public class Main {
     
     public static void main(String[] args) {
         String code = fileToString("code.txt");
+        //try {
         Lexer lexer = new Lexer(code);
         Parser parser = new Parser(lexer);
         ParseTree parseTree = parser.parse();
         Program program = new Program(parseTree);
         program.execute();
+        //}
+        //catch (RuntimeException e) {
+        //    System.out.println(e.getMessage());
+        //}
         
     }
 
