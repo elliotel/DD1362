@@ -13,6 +13,7 @@ public class Program {
     private String color;
     private Boolean drawing;
     private DecimalFormat df;
+    private StringBuilder output;
 
     ParseTree parseTree;
 
@@ -28,10 +29,12 @@ public class Program {
         drawing = false;
         df = new DecimalFormat("#0.0000");
         df.setRoundingMode(RoundingMode.HALF_UP);
+        output = new StringBuilder();
     }
 
     public void execute() {
         execute(parseTree);
+        System.out.println(output.toString());
     }
 
     private void execute(ParseTree parseTree) {
@@ -85,10 +88,10 @@ public class Program {
                 }
                 x += forward * cosAngle;
                 y += forward * sinAngle;
-                if (x > -0.00005 && x < 0) { x = 0; }
-                if (y > -0.00005 && y < 0) { y = 0; }
+                //if (x > -0.00005 && x < 0) { x = 0; }
+                //if (y > -0.00005 && y < 0) { y = 0; }
                 if (drawing) {
-                    System.out.println(color + " " + df.format(oldXfw) + " " + df.format(oldYfw) + " " + df.format(x) + " " + df.format(y));
+                    output.append(color).append(" ").append(df.format(oldXfw)).append(" ").append(df.format(oldYfw)).append(" ").append(df.format(x)).append(" ").append(df.format(y)).append("\n");
                 }
                 break;
             case "BACK":
@@ -97,10 +100,10 @@ public class Program {
                 double oldYbw = y;
                 x -= backward * Math.cos(Math.PI*angle/180);
                 y -= backward * Math.sin(Math.PI*angle/180);
-                if (x > -0.00005 && x < 0) { x = 0; }
-                if (y > -0.00005 && y < 0) { y = 0; }
+                //if (x > -0.00005 && x < 0) { x = 0; }
+                //if (y > -0.00005 && y < 0) { y = 0; }
                 if (drawing) {
-                    System.out.println(color + " " + df.format(oldXbw) + " " + df.format(oldYbw) + " " + df.format(x) + " " + df.format(y));
+                    output.append(color).append(" ").append(df.format(oldXbw)).append(" ").append(df.format(oldYbw)).append(" ").append(df.format(x)).append(" ").append(df.format(y)).append("\n");
                 }
                 break;
             case "LEFT":

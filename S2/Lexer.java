@@ -7,7 +7,6 @@ public class Lexer {
     private List<Token> tokens;
     private int index;
     private List<Integer> newlines;
-    private int indexNewlines;
     private List<String> data;
     private int indexData;
     private int quoteCount;
