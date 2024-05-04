@@ -241,6 +241,7 @@ public class Parser {
             if (curr == null) {
                 throw new IllegalArgumentException();
             }
+            line = lexer.peekNewlines();
             throw new RuntimeException("Syntaxfel på rad " + line);
         }
     }
