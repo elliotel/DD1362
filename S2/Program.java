@@ -96,8 +96,8 @@ public class Program {
                 double oldYbw = y;
                 x -= backward * Math.cos(Math.PI*angle/180);
                 y -= backward * Math.sin(Math.PI*angle/180);
-                if (x == -0) { x = 0; }
-                if (y == -0) { y = 0; }
+                if (x > -0.00005 && x < 0) { x = 0; }
+                if (y > -0.00005 && y < 0) { y = 0; }
                 if (drawing) {
                     System.out.println(color + " " + df.format(oldXbw) + " " + df.format(oldYbw) + " " + df.format(x) + " " + df.format(y));
                 }

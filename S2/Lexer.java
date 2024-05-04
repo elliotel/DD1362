@@ -75,6 +75,7 @@ public class Lexer {
     private List<Token> tokenize(String input) {
         List<Token> tokens = new ArrayList<>();
         int index = 0;
+        boolean rep = false;
         while (index < input.length()) {
             //Hoppar över blanksteg
             while (index < input.length() && Character.isWhitespace(input.charAt(index))) {
@@ -86,7 +87,8 @@ public class Lexer {
     
             boolean tokenMatched = false;
             for (Token token : Token.values()) {
-                Matcher matcher = token.getMatcher(input.substring(index));
+                String text = input.substring(index);
+                Matcher matcher = token.getMatcher(text);
                 if (matcher.lookingAt()) {
                     String removed = input.substring(0, index);
                     int newLineCount = countNewlines(removed);
@@ -117,16 +119,35 @@ public class Lexer {
                     newlines.add(newLineCount + 1);
                     String matchedText = matcher.group();
                     index += matchedText.length();
+                    /*
                     if (token == Token.REP) {
                         token = Token.DECIMAL;
                         tokens.add(token);
                         newlines.add(newLineCount + 1);
+                        //for (int ind = 0; ind  < matchedText.length(); ind++) {
+                        //    if (matchedText.charAt(ind) == '%') {
+                        //        String start = matchedText.substring(0, ind);
+                        //        String end = matchedText.substring(ind).replaceFirst("^[^\n]*", "");
+                        //        matchedText = start + end;
+                        //        ind = 0;
+                        //    }
+                        //}
                         matchedText = matchedText.replaceFirst("^[^\\d]*", "");
                         matcher = token.getMatcher(matchedText);
+                    } */
+                    if (token == Token.REP) {
+                        rep = true;
                     }
                     if (token == Token.DECIMAL) {
                         if (matcher.lookingAt()) {  
                         String digit = matcher.group();
+                        if (rep) {
+                            char c = text.charAt(digit.length());
+                            if (!(Character.isWhitespace(c) || c == '%')) {
+                                tokens.add(Token.ERROR);
+                            }
+                            rep = false;
+                        }
                         data.add(digit);
                         }
                     }
