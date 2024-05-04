@@ -15,7 +15,6 @@ public class Lexer {
     public Lexer(String code) {
         index = 0;
         indexData = 0;
-        indexNewlines = 0;
         quoteCount = 0;
         data = new ArrayList<>();
         newlines = new ArrayList<>();
@@ -31,11 +30,6 @@ public class Lexer {
         }
     }
 
-    public Token popWithNewlines() {
-        popNewlines();
-        return pop();
-    }
-
     public Token pop() {
         if (index < tokens.size()) {
             return tokens.get(index++);
@@ -46,17 +40,8 @@ public class Lexer {
     }
     
     public int peekNewlines() {
-        if (indexNewlines < newlines.size()) {
-            return newlines.get(indexNewlines);
-        }
-        else {
-            return newlines.get(newlines.size()-1);
-        }
-    }
-
-    public int popNewlines() {
-        if (indexNewlines < newlines.size()) {
-            return newlines.get(indexNewlines++);
+        if (index < newlines.size()) {
+            return newlines.get(index);
         }
         else {
             return newlines.get(newlines.size()-1);
@@ -87,11 +72,10 @@ public class Lexer {
     
             boolean tokenMatched = false;
             for (Token token : Token.values()) {
-                String text = input.substring(index);
-                Matcher matcher = token.getMatcher(text);
+                Matcher matcher = token.getMatcher(input);
+                matcher.region(index, input.length());
                 if (matcher.lookingAt()) {
-                    String removed = input.substring(0, index);
-                    int newLineCount = countNewlines(removed);
+                    int newLineCount = countNewlines(input, index);
                     if (token == Token.QUOTE) {
                         int comments = 0;
                         while (tokens.get(tokens.size() - 1 - comments) == Token.COMMENT) {
@@ -116,25 +100,6 @@ public class Lexer {
                     else {
                         tokens.add(token);
                     }
-                    newlines.add(newLineCount + 1);
-                    String matchedText = matcher.group();
-                    index += matchedText.length();
-                    /*
-                    if (token == Token.REP) {
-                        token = Token.DECIMAL;
-                        tokens.add(token);
-                        newlines.add(newLineCount + 1);
-                        //for (int ind = 0; ind  < matchedText.length(); ind++) {
-                        //    if (matchedText.charAt(ind) == '%') {
-                        //        String start = matchedText.substring(0, ind);
-                        //        String end = matchedText.substring(ind).replaceFirst("^[^\n]*", "");
-                        //        matchedText = start + end;
-                        //        ind = 0;
-                        //    }
-                        //}
-                        matchedText = matchedText.replaceFirst("^[^\\d]*", "");
-                        matcher = token.getMatcher(matchedText);
-                    } */
                     if (token == Token.REP) {
                         rep = true;
                     }
@@ -142,7 +107,7 @@ public class Lexer {
                         if (matcher.lookingAt()) {  
                         String digit = matcher.group();
                         if (rep) {
-                            char c = text.charAt(digit.length());
+                            char c = input.charAt(index + digit.length());
                             if (!(Character.isWhitespace(c) || c == '%')) {
                                 tokens.add(Token.ERROR);
                             }
@@ -158,6 +123,9 @@ public class Lexer {
                             }
                     }
                     tokenMatched = true;
+                    newlines.add(newLineCount + 1);
+                    String matchedText = matcher.group();
+                    index += matchedText.length();
                     break;
                 }
             }
@@ -168,9 +136,9 @@ public class Lexer {
         return tokens;
     }
 
-    private int countNewlines(String text) {
+    private int countNewlines(String text, int end) {
         int count = 0;
-        for (int i = 0; i < text.length(); i++) {
+        for (int i = 0; i < end; i++) {
             if (text.charAt(i) == '\n') {
                 count++;
             }

@@ -12,6 +12,7 @@ public class Program {
     private Boolean angleChanged;
     private String color;
     private Boolean drawing;
+    private DecimalFormat df;
 
     ParseTree parseTree;
 
@@ -25,6 +26,8 @@ public class Program {
         angleChanged = true;
         color = "#0000FF";
         drawing = false;
+        df = new DecimalFormat("#0.0000");
+        df.setRoundingMode(RoundingMode.HALF_UP);
     }
 
     public void execute() {
@@ -70,8 +73,6 @@ public class Program {
     }
     
     private void run(String leftData, String rightData) {
-        DecimalFormat df = new DecimalFormat("#0.0000");
-        df.setRoundingMode(RoundingMode.HALF_UP);
         switch (leftData) {
             case "FORW":
                 int forward = Integer.parseInt(rightData);

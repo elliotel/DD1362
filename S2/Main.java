@@ -1,11 +1,11 @@
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-//import java.util.Scanner;
+//import java.io.IOException;
+//import java.nio.file.Files;
+//import java.nio.file.Paths;
+import java.util.Scanner;
 
 public class Main {
 
-    
+    /*
     public static void main(String[] args) {
         String code = fileToString("code.txt");
         try {
@@ -31,14 +31,16 @@ public class Main {
         }
         return code;
     }
+
+    */
     
-    /* 
         public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        String code = "";
+        StringBuilder codeBuilder = new StringBuilder();
         while (sc.hasNextLine()) {
-            code += sc.nextLine() + "\n";
+            codeBuilder.append(sc.nextLine()).append("\n");
         }
+        String code = codeBuilder.toString();
         try {
         Lexer lexer = new Lexer(code);
         Parser parser = new Parser(lexer);
@@ -52,6 +54,5 @@ public class Main {
         sc.close();
     }
 
-    */
 }
 

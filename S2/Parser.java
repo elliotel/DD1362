@@ -14,13 +14,13 @@ public class Parser {
 
     private ParseTree commandSequence() {
         while (lexer.peek() == Token.COMMENT) {
-            lexer.popWithNewlines();
+            lexer.pop();
         }
         if (lexer.peek() != null) {
         ParseTree left = command();
         ParseTree right = null;
         while (lexer.peek() == Token.COMMENT) {
-            lexer.popWithNewlines();
+            lexer.pop();
         }
         if (lexer.peek() != Token.QUOTE) {
             right = commandSequence();
@@ -33,16 +33,15 @@ public class Parser {
 
     private ParseTree command() {
         while (lexer.peek() == Token.COMMENT) {
-            lexer.popWithNewlines();
+            lexer.pop();
         }
         Token next = lexer.peek();
-        int line = lexer.peekNewlines();
         if (next == null) {
             return null;
         }
         switch (next) {
-            case ERROR:
-                throw new RuntimeException("Syntaxfel på rad " + line);
+            case REP:
+                    return repeat();
             case FORW:
             case BACK:
                 return movement();
@@ -54,21 +53,21 @@ public class Parser {
                 return brushMode();
             case COLOR:
                 return colorChange();
-            case REP:
-                return repeat();
+            case ERROR:
+                throw new RuntimeException("Syntaxfel på rad " + lexer.peekNewlines());
             default:
-                throw new RuntimeException("Syntaxfel på rad " + line);
+                throw new RuntimeException("Syntaxfel på rad " + lexer.peekNewlines());
         }
     }
 
     private ParseTree movement() {
-        Token move = lexer.popWithNewlines();
+        Token move = lexer.pop();
         ParseTree left = new ParseTree(null, null, move.name());
         ParseTree right = decimal();
+        int line = lexer.peekNewlines();
         Token curr = lexer.pop();
-        int line = lexer.popNewlines();
         while (curr == Token.COMMENT) {
-            curr = lexer.popWithNewlines();
+            curr = lexer.pop();
         }
         if (curr != Token.PERIOD) {
             throw new RuntimeException("Syntaxfel på rad  " + line);
@@ -78,9 +77,9 @@ public class Parser {
 
     private ParseTree decimal() {
         Token curr = lexer.pop();
-        int line = lexer.popNewlines();
+        int line = lexer.peekNewlines();
         while (curr == Token.COMMENT) {
-            curr = lexer.popWithNewlines();
+            curr = lexer.pop();
         }
         if (curr != Token.DECIMAL) {
             throw new RuntimeException("Syntaxfel på rad  " + line);
@@ -93,54 +92,54 @@ public class Parser {
     }
 
     private ParseTree turn() {
+        int line = lexer.peekNewlines();
         Token direction = lexer.pop();
-        int line = lexer.popNewlines();
         ParseTree left = new ParseTree(null, null, direction.name());
         ParseTree right = decimal();
         while (lexer.peek() == Token.COMMENT) {
-            lexer.popWithNewlines();
+            lexer.pop();
         }
         if (lexer.peek() != Token.PERIOD) {
             throw new RuntimeException("Syntaxfel på rad " + line);
         }
-        lexer.popWithNewlines();
+        lexer.pop();
         return new ParseTree(left, right);
     }
 
     private ParseTree brushMode() {
+        int line = lexer.peekNewlines();
         Token mode = lexer.pop();
-        int line = lexer.popNewlines();
         ParseTree left = new ParseTree(null, null, mode.name());
         while (lexer.peek() == Token.COMMENT) {
-            lexer.popWithNewlines();
+            lexer.pop();
         }
         if (lexer.peek() != Token.PERIOD) {
             throw new RuntimeException("Syntaxfel på rad " + line);
         }
-        lexer.popWithNewlines();
+        lexer.pop();
         return new ParseTree(left);
     }
 
     private ParseTree colorChange() {
+        int line = lexer.peekNewlines();
         lexer.pop();
-        int line = lexer.popNewlines();
         ParseTree left = new ParseTree(null, null, Token.COLOR.name());
         ParseTree right = hexCode();
         while (lexer.peek() == Token.COMMENT) {
-            lexer.popWithNewlines();
+            lexer.pop();
         }
         if (lexer.peek() != Token.PERIOD) {
             throw new RuntimeException("Syntaxfel på rad " + line);
         }
-        lexer.popWithNewlines();
+        lexer.pop();
         return new ParseTree(left, right);
     }
 
     private ParseTree hexCode() {
+        int line = lexer.peekNewlines();
         Token curr = lexer.pop();
-        int line = lexer.popNewlines();
         while (curr == Token.COMMENT) {
-            curr = lexer.popWithNewlines();
+            curr = lexer.pop();
         }
         if (curr != Token.HEX) {
             throw new RuntimeException("Syntaxfel på rad " + line);
@@ -151,13 +150,12 @@ public class Parser {
     
     private ParseTree repeat() {
         lexer.pop();
-        int line = lexer.popNewlines();
+        int line = lexer.peekNewlines();
         Token next = lexer.peek();
         ParseTree innerLeft = new ParseTree(null, null, Token.REP.name());
         ParseTree innerRight = null;
         while (next == Token.COMMENT) {
             lexer.pop();
-            line = lexer.popNewlines();
             next = lexer.peek();
         }
         if (next == Token.DECIMAL) {
@@ -171,23 +169,22 @@ public class Parser {
         next = lexer.peek();
         while (next == Token.COMMENT) {
             lexer.pop();
-            line = lexer.popNewlines();
             next = lexer.peek();
         }
         if (next == Token.QUOTE) {
-            lexer.popWithNewlines();
+            lexer.pop();
             while (lexer.peek() == Token.COMMENT) {
-                lexer.popWithNewlines();
+                lexer.pop();
             }
             right = commandSequence();
-            while (lexer.peek() == Token.COMMENT) {
-                lexer.popWithNewlines();
-            }
             line = lexer.peekNewlines();
+            while (lexer.peek() == Token.COMMENT) {
+                lexer.pop();
+            }
             if (lexer.peek() != Token.QUOTE) {
                 throw new RuntimeException("Syntaxfel på rad " + line);
             }
-            lexer.popWithNewlines();
+            lexer.pop();
         }
         else if (next == Token.REP) {
             right = repeat();

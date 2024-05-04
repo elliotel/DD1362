@@ -2,6 +2,7 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 public enum Token {
+    REP ("rep([ \t\r\n]|(?:%[^\r\n]*\r?\n))+"),
     FORW ("forw([ \t\r\n]+|(?:%[^\r\n]*\r?\n))"),
     BACK ("back([ \t\r\n]+|(?:%[^\r\n]*\r?\n))"),
     LEFT ("left([ \t\r\n]+|(?:%[^\r\n]*\r?\n))"),
@@ -12,7 +13,6 @@ public enum Token {
     //REP ("rep[ \t\r\n]+\\d+[ \t\r\n]+"),
     //REP ("rep([ \t\r\n]|(?:%[^\r\n]*\r?\n))+(\\d+|%.*?\r?\n[ \t\r\n]*\\d+)([ \t\r\n]+|(?:%[^\r\n]*\r?\n))"),
     //REP ("rep[ \t\r\n]+"),
-    REP ("rep([ \t\r\n]|(?:%[^\r\n]*\r?\n))+"),
     PERIOD ("\\."),
     QUOTE ("\""),
     DECIMAL ("\\d+"),
