@@ -68,28 +68,27 @@ public class Parser {
         try {
         right = decimal();
         }
-        catch (NullPointerException e) {
+        catch (IllegalArgumentException e) {
             throw new RuntimeException("Syntaxfel på rad " + line);
         }
-        line = lexer.peekNewlines();
-        Token curr = lexer.pop();
-        while (curr == Token.COMMENT) {
-            curr = lexer.pop();
+        try {
+            checkPeriod();
         }
-        if (curr != Token.PERIOD) {
+        catch (IllegalArgumentException e) {
             throw new RuntimeException("Syntaxfel på rad " + line);
         }
         return new ParseTree(left, right);
     }
 
     private ParseTree decimal() {
-        Token curr = lexer.pop();
         int line = lexer.peekNewlines();
+        Token curr = lexer.pop();
         while (curr == Token.COMMENT) {
+            line = lexer.peekNewlines();
             curr = lexer.pop();
         }
         if (curr == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         else if (curr != Token.DECIMAL) {
             throw new RuntimeException("Syntaxfel på rad " + line);
@@ -109,30 +108,27 @@ public class Parser {
         try {
         right = decimal();
         }
-        catch (NullPointerException e) {
+        catch (IllegalArgumentException e) {
             throw new RuntimeException("Syntaxfel på rad " + line);
         }
-        while (lexer.peek() == Token.COMMENT) {
-            lexer.pop();
+        try {
+            checkPeriod();
         }
-        if (lexer.peek() != Token.PERIOD) {
+        catch (IllegalArgumentException e) {
             throw new RuntimeException("Syntaxfel på rad " + line);
         }
-        lexer.pop();
         return new ParseTree(left, right);
     }
 
     private ParseTree brushMode() {
         int line = lexer.peekNewlines();
         Token mode = lexer.pop();
-        ParseTree left = new ParseTree(null, null, mode.name());
-        while (lexer.peek() == Token.COMMENT) {
-            lexer.pop();
+        ParseTree left = new ParseTree(null, null, mode.name());try {
+            checkPeriod();
         }
-        if (lexer.peek() != Token.PERIOD) {
+        catch (IllegalArgumentException e) {
             throw new RuntimeException("Syntaxfel på rad " + line);
         }
-        lexer.pop();
         return new ParseTree(left);
     }
 
@@ -144,16 +140,15 @@ public class Parser {
         try {
             right = hexCode();
             }
-            catch (NullPointerException e) {
+            catch (IllegalArgumentException e) {
                 throw new RuntimeException("Syntaxfel på rad " + line);
             }
-        while (lexer.peek() == Token.COMMENT) {
-            lexer.pop();
-        }
-        if (lexer.peek() != Token.PERIOD) {
-            throw new RuntimeException("Syntaxfel på rad " + line);
-        }
-        lexer.pop();
+        try {
+                checkPeriod();
+            }
+            catch (IllegalArgumentException e) {
+                throw new RuntimeException("Syntaxfel på rad " + line);
+            }
         return new ParseTree(left, right);
     }
 
@@ -161,10 +156,11 @@ public class Parser {
         int line = lexer.peekNewlines();
         Token curr = lexer.pop();
         while (curr == Token.COMMENT) {
+            line = lexer.peekNewlines();
             curr = lexer.pop();
         }
         if (curr == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         else if (curr != Token.HEX) {
             throw new RuntimeException("Syntaxfel på rad " + line);
@@ -181,6 +177,7 @@ public class Parser {
         ParseTree innerRight = null;
         while (next == Token.COMMENT) {
             lexer.pop();
+            line = lexer.peekNewlines();
             next = lexer.peek();
         }
         if (next == Token.DECIMAL) {
@@ -188,7 +185,7 @@ public class Parser {
             try {
             innerRight = decimal();
             }
-            catch (NullPointerException e) {
+            catch (IllegalArgumentException e) {
                 throw new RuntimeException("Syntaxfel på rad " + line);
             }
         }
@@ -197,19 +194,23 @@ public class Parser {
         }
         ParseTree left = new ParseTree(innerLeft, innerRight);
         ParseTree right = null;
+        line = lexer.peekNewlines();
         next = lexer.peek();
         while (next == Token.COMMENT) {
             lexer.pop();
+            line = lexer.peekNewlines();
             next = lexer.peek();
         }
         if (next == Token.QUOTE) {
             lexer.pop();
             while (lexer.peek() == Token.COMMENT) {
+                line = lexer.peekNewlines();
                 lexer.pop();
             }
             right = commandSequence();
             line = lexer.peekNewlines();
             while (lexer.peek() == Token.COMMENT) {
+                line = lexer.peekNewlines();
                 lexer.pop();
             }
             if (lexer.peek() != Token.QUOTE) {
@@ -224,5 +225,19 @@ public class Parser {
             right = command();
         }
         return new ParseTree(left, right);
+    }
+
+    private void checkPeriod() {
+        int line = lexer.peekNewlines();
+        Token curr = lexer.pop();
+        while (curr == Token.COMMENT) {
+            curr = lexer.pop();
+        }
+        if (curr != Token.PERIOD) {
+            if (curr == null) {
+                throw new IllegalArgumentException();
+            }
+            throw new RuntimeException("Syntaxfel på rad " + line);
+        }
     }
 }
