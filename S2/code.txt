@@ -1,10 +1,9 @@
-DOWN .
-% OBS! Denna fil har ett
-% tabb-tecken (’\t’) i första
-% REP-satsen. Om du kör den
-% genom att göra copy-paste
-% kommer tabb-tecknet inte
-% testas korrekt.
-REP 2 REP % raaadbryyyt
-1 "REP 2 REP 2 "FORW 1."
-LEFT 45."
+% Program can read code from here
+% Example syntax (Case-Insensitive):
+% Down.
+% Forw 1.
+% Rep 4 "Left 90. Forw 1."
+% Color #FFFFFF.
+% Right 90.
+% Back 1.
+% Up.

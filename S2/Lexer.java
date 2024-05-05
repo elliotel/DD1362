@@ -10,11 +10,13 @@ public class Lexer {
     private List<String> data;
     private int indexData;
     private int quoteCount;
+    private int line;
 
     public Lexer(String code) {
         index = 0;
         indexData = 0;
         quoteCount = 0;
+        line = 1;
         data = new ArrayList<>();
         newlines = new ArrayList<>();
         tokens = tokenize(code);
@@ -63,27 +65,32 @@ public class Lexer {
         while (index < input.length()) {
             //Hoppar över blanksteg
             while (index < input.length() && Character.isWhitespace(input.charAt(index))) {
+                if (input.charAt(index) == '\n') {
+                    line++;
+                }
                 index++;
             }
             if (index >= input.length()) {
                 break;
             }
     
-            boolean tokenMatched = false;
             for (Token token : Token.values()) {
                 Matcher matcher = token.getMatcher(input);
                 matcher.region(index, input.length());
                 if (matcher.lookingAt()) {
-                    int newLineCount = countNewlines(input, index);
+                    newlines.add(line);
+                    if (token == Token.COMMENT) {
+                        line++;
+                    }
                     if (token == Token.QUOTE) {
                         int comments = 0;
-                        while (tokens.get(tokens.size() - 1 - comments) == Token.COMMENT) {
+                        while (tokens.size() > comments && tokens.get(tokens.size() - 1 - comments) == Token.COMMENT) {
                             comments++;
                         }
-                        while (tokens.get(tokens.size() - 2 - comments) == Token.COMMENT) {
+                        while (tokens.size() > comments + 1 && tokens.get(tokens.size() - 2 - comments) == Token.COMMENT) {
                             comments++;
                         }
-                        if (tokens.get(tokens.size() - 2 - comments) == Token.REP) {
+                        if (tokens.size() > comments + 1 && tokens.get(tokens.size() - 2 - comments) == Token.REP) {
                             quoteCount++;
                         }
                         else {
@@ -121,27 +128,19 @@ public class Lexer {
                             data.add(hex);
                             }
                     }
-                    tokenMatched = true;
-                    newlines.add(newLineCount + 1);
                     String matchedText = matcher.group();
+                    if (token == Token.REP || token == Token.FORW || token == Token.BACK || token == Token.LEFT || token == Token.RIGHT || token == Token.COLOR) {
+                        for (int i = index; i < index + matchedText.length(); i++) {
+                            if (input.charAt(i) == '\n') {
+                                line++;
+                            }
+                        }
+                    }
                     index += matchedText.length();
                     break;
                 }
             }
-            if (!tokenMatched) {
-                index++;
-            }
         }
         return tokens;
-    }
-
-    private int countNewlines(String text, int end) {
-        int count = 0;
-        for (int i = 0; i < end; i++) {
-            if (text.charAt(i) == '\n') {
-                count++;
-            }
-        }
-        return count;
     }
 }
