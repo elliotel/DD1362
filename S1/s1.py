@@ -10,12 +10,12 @@
 ########################################################################
 
 def dna():          # uppgift 1
-    return "^[ACGT]+$"
+    return r"^[ACGT]+$"
     #return not "[^ACGT]"
 
 def sorted():       # uppgift 2
     #return "^9*8*7*6*5*4*3*2*1*0*+$"
-    return "^9*8*7*6*5*4*3*2*1*0*$"
+    return r"^9*8*7*6*5*4*3*2*1*0*$"
 
 def hidden1(x):     # uppgift 3
     # indata x är strängen som vi vill konstruera ett regex för att söka efter
@@ -23,21 +23,34 @@ def hidden1(x):     # uppgift 3
 
 def hidden2(x):     # uppgift 4
     # indata x är strängen som vi vill konstruera ett regex för att söka efter
-    return ".*".join(x)
+    return r".*".join(x)
 
 def equation():     # uppgift 5
     #return "^-?\d+([-+*/]\d+)*$"
     #return "^[-+]?\d+([-+*/=]\d+)*$"
-    return "^[-+]?\d+([-+*/]\d+)*(=?[-+]?\d+([-+*/]\d+)*)?$"
+    return r"^[-+]?\d+([-+*/]\d+)*(=?[-+]?\d+([-+*/]\d+)*)?$"
 
 def parentheses():  # uppgift 6
-    return "^(\((\((\((\((\(\))*\))*\))*\))*\))*$"
     #return "^([(]([(]([(]([(]([(][)])*[)])*[)])*[)])*[)])*$"
+    return r"^(\((\((\((\((\(\))*\))*\))*\))*\))*$"
 
 
 def sorted3():      # uppgift 7
     #return "^\d*(012|123|234|345|456|567|678|789)\d*$"
-    return "^\d*(01[2-9]|[0-1]2[3-9]|[0-2]3[4-9]|[0-3]4[5-9]|[0-4]5[6-9]|[0-5]6[7-9]|[0-6]7[8-9]|[0-7]89)\d*$"
+    return r"^\d*(01[2-9]|[0-1]2[3-9]|[0-2]3[4-9]|[0-3]4[5-9]|[0-4]5[6-9]|[0-5]6[7-9]|[0-6]7[8-9]|[0-7]89)\d*$"
+
+def hidden2_med_lika_glapp(x, line):
+    # indata x är strängen som vi vill konstruera ett regex för att söka efter
+    regex = ""
+    for i in range(len(line)):
+        stringToInsert = ".{" + str(i) + "}"
+        regex += "(" + stringToInsert.join(x)+ ")"
+        if (i < len(line) - 1):
+            regex += "|"
+    return regex
+
+def equation_with_parenthesis():
+    return r"^[-+]?(\d+)|((\([-+]?\d+([-+*/]\d+)*(\([-+]?\d+([-+*/]\d+)*(\([-+]?\d+([-+*/]\d+)*(\([-+]?\d+([-+*/]\d+)*(\([-+]?\d+([-+*/]\d+)*\))*\))*\))*\))*\)))(=?[-+]?(\d+)|((\([-+]?\d+([-+*/]\d+)*(\([-+]?\d+([-+*/]\d+)*(\([-+]?\d+([-+*/]\d+)*(\([-+]?\d+([-+*/]\d+)*(\([-+]?\d+([-+*/]\d+)*\))*\))*\))*\))*\))))?$"
 
 
 ########################################################################
@@ -70,6 +83,13 @@ def main():
         for task in tasks:
             result = '' if re.search(task(), line) else 'INTE '
             print('%s(): "%s" matchar %suttrycket "%s"' % (task.__name__, line, result, task()))
+        
+        result = '' if re.search(hidden2_med_lika_glapp(x, line), line) else 'INTE '
+        print('%s(): "%s" matchar %suttrycket "%s"' % (hidden2_med_lika_glapp.__name__, line, result, hidden2_med_lika_glapp(x, line)))
+
+        
+        result = '' if re.search(equation_with_parenthesis(), line) else 'INTE '
+        print('%s(): "%s" matchar %suttrycket "%s"' % (equation_with_parenthesis.__name__, line, result, equation_with_parenthesis()))
 
 
 if __name__ == '__main__': main()
